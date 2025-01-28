@@ -102,7 +102,7 @@ FROM HR.employees e
 JOIN HR.job_history jh ON e.employee_id = jh.employee_id;
 
 --
--- 9. Department-Wide Salary Distribution
+-- 9. Department-Wide Salary Distribution///
 --
 -- Analyze the distribution of salaries within each department using percentiles.
 SELECT
