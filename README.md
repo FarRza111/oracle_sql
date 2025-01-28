@@ -9,12 +9,12 @@
 
 
 
-### Zəhmət olmasa bu youtube videosundan oracle hesabı yaradın
+### Zəhmət olmasa bu youtube videosuna baxaraq oracle hesabı yaradın 
     https://www.youtube.com/watch?v=hZ67osmnD7U
 
 ### Google'da Oracle Live SQL yazin ve və yaradılmış gmail və parolu daxil edin
     
     https://livesql.oracle.com/ords/f?p=590:1000
 
-###
+
 
