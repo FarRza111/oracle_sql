@@ -1,4 +1,4 @@
--- 1. get all the employees
+-- 1. get all the employees /
 
 SELECT * FROM HR.employees;
 
