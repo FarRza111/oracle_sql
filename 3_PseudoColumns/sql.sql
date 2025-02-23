@@ -1,1 +1,1 @@
-select * from fariz;
+select * from farrza;
