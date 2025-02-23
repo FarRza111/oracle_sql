@@ -1,2 +1,2 @@
-select * from farrza_local_nazkoli_newbranch
+select * from dev_branch
 ;
