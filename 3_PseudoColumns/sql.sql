@@ -1,1 +1,1 @@
-select * from farrza_local;
+select * from farrza_local_nazkoli;
