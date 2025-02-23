@@ -77,11 +77,73 @@ SELECT 2 * 1.23, 3 * '2,34' FROM DUAL;
 -- ---------- ----------
 --       2,46       7,02
 
+
+SELECT TO_CHAR(TO_DATE('27-OCT-98', 'DD-MON-RR'), 'YYYY') "Year" FROM DUAL;
+
+-- Year
+-- ----
+-- 1998
+
+SELECT TO_CHAR(TO_DATE('27-OCT-17', 'DD-MON-RR'), 'YYYY') "Year" FROM DUAL;
+
+-- Year
+-- ----
+-- 2017
+
+
+SELECT TO_CHAR(SYSDATE, 'fmDDTH') || ' of ' ||
+       TO_CHAR(SYSDATE, 'fmMonth') || ', ' ||
+       TO_CHAR(SYSDATE, 'YYYY') "Ides"
+  FROM DUAL;
+
+-- Ides
+-- ------------------
+-- 3RD of April, 2008
+
+
+SELECT TO_CHAR(SYSDATE, 'DDTH') || ' of ' ||
+   TO_CHAR(SYSDATE, 'Month') || ', ' ||
+   TO_CHAR(SYSDATE, 'YYYY') "Ides"
+  FROM DUAL;
+
+-- Ides
+-- -----------------------
+-- 03RD of April    , 2008
+
+
+
+SELECT TO_CHAR(SYSDATE, 'fmDay') || '''s Special' "Menu"
+  FROM DUAL;
+
+-- Menu
+-- -----------------
+-- Tuesday's Special
+
+
+SELECT last_name employee, TO_CHAR(hire_date,'fmMonth DD, YYYY') hiredate, Hire_date "dddd"
+  FROM employees
+  WHERE department_id = 20;
+
+
+--Updating Hunold with new date
+UPDATE employees
+SET hire_date = TO_DATE('2008 05 20','YYYY MM DD')
+WHERE last_name = 'Hunold';
+
+select * FROM (
+select * from employees  WHERE last_name = 'Hunold'
+UNION ALL
+select * from hr.employees WHERE last_name = 'Hunold') M ;
+
+
+
+
 TO_DATE('98-DEC-25 17:30','YY-MON-DD HH24:MI')
 
 SELECT *
   FROM my_table
   WHERE datecol > TO_DATE('02-OCT-02', 'DD-MON-YY');
+
 
 
 
