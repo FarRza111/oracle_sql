@@ -1,1 +1,1 @@
-select * from mylocal;
+select * from farrza;
