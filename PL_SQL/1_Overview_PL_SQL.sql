@@ -10,7 +10,7 @@ BEGIN      -- Executable part (required)
 END;
 
 
-/----------------------------LOOP-------------------------------/
+/----------------------------LOOP--------------------------------/
 BEGIN
   FOR someone IN (
     SELECT * FROM employees
