@@ -88,3 +88,20 @@ UPDATE clerk
 SET job_id = 'IT_PROG'
 WHERE employee_id = 101;
 
+
+
+-----DUPLICATE_DELETE----
+
+DELETE FROM employees
+WHERE (employee_id, first_name, last_name) IN (
+    SELECT employee_id, first_name, last_name
+    FROM (
+        SELECT
+            employee_id,
+            first_name,
+            last_name,
+            ROW_NUMBER() OVER (PARTITION BY employee_id, first_name, last_name ORDER BY employee_id) AS rn
+        FROM employees
+    )
+    WHERE rn > 1
+);
