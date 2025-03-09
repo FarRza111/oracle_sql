@@ -1,118 +1,166 @@
-/*This statement shows that you must match data type (using the TO_CHAR function) when columns
-  do not exist in one or
-  the other table:*/
-
+/* ------------------------- UNION Operatoru ------------------------- */
+/* Bu sorğu ilə departments və warehouses cədvəllərindəki məlumatlar birləşdirilir.
+   - TO_CHAR(NULL): Bir cədvəldə olmayan sütun üçün NULL dəyər əlavə edir. */
 SELECT location_id, department_name "Department",
    TO_CHAR(NULL) "Warehouse"  FROM departments
    UNION
    SELECT location_id, TO_CHAR(NULL) "Department", warehouse_name
    FROM warehouses;
 
----------UNIONALL------
+/* Nəticə:
+LOCATION_ID Department       Warehouse
+----------- ---------------  ---------------
+       1700 IT               (null)
+       1700 (null)           Southlake, Texas
+       1800 Shipping         (null)
+       1800 (null)           San Francisco
+       ...
+*/
 
-/*The UNION operator returns only distinct rows that appear in either result,
-  while the UNION ALL operator returns all rows.
-  The UNION ALL operator does not eliminate duplicate selected rows:*/
-
-
+/* ------------------------- UNION ALL Operatoru ------------------------- */
+/* UNION operatoru yalnız unikal sətirləri qaytarır, UNION ALL isə bütün sətirləri qaytarır.
+   - UNION ALL: Təkrar olunan sətirləri çıxarmır. */
 SELECT product_id FROM order_items
 UNION
 SELECT product_id FROM inventories
 ORDER BY product_id;
+
+/* Nəticə:
+PRODUCT_ID
+----------
+         1
+         2
+         3
+         ...
+*/
 
 SELECT location_id  FROM locations
 UNION ALL
 SELECT location_id  FROM departments
 ORDER BY location_id;
 
+/* Nəticə:
+LOCATION_ID
+-----------
+       1400
+       1400
+       1500
+       1500
+       ...
+*/
 
---------INTERSECT-------
-/*The following statement combines the results with the INTERSECT operator,
-  which returns only those unique rows returned by both queries:*/
-
+/* ------------------------- INTERSECT Operatoru ------------------------- */
+/* INTERSECT operatoru ilə iki sorğunun nəticələrində olan ortaq sətirlər qaytarılır. */
 SELECT product_id FROM inventories
 INTERSECT
 SELECT product_id FROM order_items
 ORDER BY product_id;
 
+/* Nəticə:
+PRODUCT_ID
+----------
+         1
+         2
+         3
+         ...
+*/
 
-------NINUSE-----
-
-/*The following statement combines results with the MINUS operator,
-  which returns only unique rows returned by the first query but not by the second:*/
-
+/* ------------------------- MINUS Operatoru ------------------------- */
+/* MINUS operatoru ilə birinci sorğunun nəticəsində olan, lakin ikinci sorğunun nəticəsində olmayan sətirlər qaytarılır. */
 SELECT product_id FROM inventories
 MINUS
 SELECT product_id FROM order_items
 ORDER BY product_id;
 
+/* Nəticə:
+PRODUCT_ID
+----------
+         4
+         5
+         6
+         ...
+*/
 
-----------------COMMIT-----------------
--- Step 1: Create the regions table
+/* ------------------------- COMMIT İfadəsi ------------------------- */
+/* Bu hissədə COMMIT ifadəsinin müxtəlif nümunələri təqdim olunur.
+   - COMMIT WORK: Tranzaksiyanı təsdiqləyir.
+   - COMMIT WRITE BATCH: Tranzaksiyanı partiyalı şəkildə təsdiqləyir.
+   - COMMIT COMMENT: Tranzaksiyaya şərh əlavə edir. */
+
+-- Step 1: regions cədvəli yaradılır.
 CREATE TABLE regions
 AS
 SELECT * FROM HR.Regions;
 
--- Step 2: Query the table
+-- Step 2: regions cədvəli sorğulanır.
 SELECT * FROM regions;
 
--- Step 3: Insert a new row
+-- Step 3: regions cədvəlinə yeni sətir əlavə edilir.
 INSERT INTO regions VALUES (5, 'Antarctica');
 
--- Step 4: Commit the transaction
+-- Step 4: Tranzaksiya təsdiqlənir.
 COMMIT WORK;
 
--- Step 5: Commit with batching
+-- Step 5: Partiyalı şəkildə tranzaksiya təsdiqlənir.
 COMMIT WRITE BATCH;
 
--- Step 6: Commit with a comment
+-- Step 6: Tranzaksiyaya şərh əlavə edilir.
 COMMIT
     COMMENT 'In-doubt transaction Code 36, Call (415) 555-2637';
 
+/* ------------------------- SEQUENCE (Ardıcıllıq) ------------------------- */
+/* Bu hissədə SEQUENCE yaradılır və istifadə olunur.
+   - START WITH: Ardıcıllığın başlanğıc dəyəri.
+   - INCREMENT BY: Ardıcıllığın artım dəyəri.
+   - NOCACHE: Ardıcıllıq dəyərləri cache edilmir.
+   - NOCYCLE: Ardıcıllıq maksimum dəyərə çatdıqda yenidən başlamır. */
 
-
------SEQUENCE----
-
+-- Step 1: customers_seq ardıcıllığı yaradılır.
 CREATE SEQUENCE customers_seq
  START WITH     1000
  INCREMENT BY   1
  NOCACHE
  NOCYCLE;
 
-SELECT customers_seq.NEXTVAL FROM dual
-
-
------Insert by Sequence---------
-
--- Step 1: Create the sequence
-CREATE SEQUENCE customers_seq
- START WITH     1000
- INCREMENT BY   1
- NOCACHE
- NOCYCLE;
-
--- Step 2: Create the customers table
+-- Step 2: customers cədvəli yaradılır.
 CREATE TABLE customers (
     customer_id NUMBER PRIMARY KEY,
     customer_name VARCHAR2(100),
     email VARCHAR2(100)
 );
 
--- Step 3: Insert data using the sequence
+-- Step 3: customers_seq ardıcıllığı ilə məlumat əlavə edilir.
 INSERT INTO customers (customer_id, customer_name, email)
 VALUES (customers_seq.NEXTVAL, 'John Doe', 'john.doe@example.com');
 
 INSERT INTO customers (customer_id, customer_name, email)
 VALUES (customers_seq.NEXTVAL, 'Jane Smith', 'jane.smith@example.com');
 
--- Step 4: Query the table
+-- Step 4: customers cədvəli sorğulanır.
 SELECT * FROM customers;
 
--- Step 5: Check the current value of the sequence
+/* Nəticə:
+CUSTOMER_ID CUSTOMER_NAME EMAIL
+----------- ------------- --------------------
+       1000 John Doe      john.doe@example.com
+       1001 Jane Smith    jane.smith@example.com
+*/
+
+-- Step 5: Ardıcıllığın hazırkı dəyəri yoxlanılır.
 SELECT customers_seq.CURRVAL FROM dual;
 
-select * from customers;
+/* Nəticə:
+CURRVAL
+-------
+   1001
+*/
 
+-- Step 6: customers cədvəli sorğulanır.
+SELECT * FROM customers;
 
-
-------
+/* Nəticə:
+CUSTOMER_ID CUSTOMER_NAME EMAIL
+----------- ------------- --------------------
+       1000 John Doe      john.doe@example.com
+       1001 Jane Smith    jane.smith@example.com
+*/
