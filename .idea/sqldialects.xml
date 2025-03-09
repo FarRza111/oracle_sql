@@ -4,5 +4,6 @@
     <file url="file://$PROJECT_DIR$/19_statements/save_point.sql" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/19_statements/user_input_ui.sql" dialect="OracleSqlPlus" />
     <file url="file://$PROJECT_DIR$/analytics/master_queries.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/mini_project_sqlOracle.sql" dialect="Oracle" />
   </component>
 </project>
