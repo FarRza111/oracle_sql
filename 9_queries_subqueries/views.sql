@@ -154,3 +154,12 @@ WHERE (employee_id, first_name, last_name) IN (
 /* Nəticə:
 Təkrarlanan sətirlər silinir.
 */
+
+
+
+
+
+
+
+
+

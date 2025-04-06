@@ -4,13 +4,15 @@
    LEVEL sütunu iyerarxiyanın səviyyəsini, SYS_CONNECT_BY_PATH isə hər bir işçinin iyerarxik yolunu göstərir. 
    START WITH employee_id = 100 ilə iyerarxiya 100 nömrəli işçidən başlayır. 
    CONNECT BY PRIOR employee_id = manager_id ilə menecer-işçi əlaqəsi qurulur. */
-SELECT last_name "Employee", CONNECT_BY_ISLEAF "IsLeaf",
+SELECT
+       last_name "Employee", CONNECT_BY_ISLEAF "IsLeaf",
        LEVEL, SYS_CONNECT_BY_PATH(last_name, '/') "Path"
   FROM employees
   WHERE LEVEL <= 3 AND department_id = 80
   START WITH employee_id = 100
   CONNECT BY PRIOR employee_id = manager_id AND LEVEL <= 4
   ORDER BY "Employee", "IsLeaf";
+
 
 /* Nəticə:
 Employee                      IsLeaf      LEVEL Path
@@ -33,6 +35,8 @@ Fox                                1          3 /King/Cambrault/Fox
 /* Bu hissədə employees_seq adlı yeni bir sequence (ardıcıllıq) yaradılır. 
    Bu sequence 1-dən başlayır və hər dəfə 1 vahid artır. 
    NOCACHE seçimi ilə sequence dəyərləri cache edilmir. */
+
+
 CREATE SEQUENCE employees_seq
 	START WITH 1
 	INCREMENT BY 1
@@ -72,6 +76,7 @@ FROM XMLTABLE(
         last_name    VARCHAR2(50)  PATH 'name/last',
         hire_date    DATE          PATH 'hire_date'
 );
+
 
 /* Nəticə:
 EMPLOYEE_ID FIRST_NAME LAST_NAME HIRE_DATE
