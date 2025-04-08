@@ -180,6 +180,52 @@ FROM HR.EMPLOYEES
 
 
 
+----------------------------------------
+
+  
+SELECT 
+    curr.employee_id,
+    curr.first_name,
+    curr.last_name,
+    curr.salary AS current_salary,
+    prev.salary AS previous_salary,
+    curr.salary - prev.salary AS salary_increase,
+    ROUND((curr.salary - prev.salary) / prev.salary * 100, 2) AS percent_increase,
+    (SELECT AVG(salary) FROM employees) AS company_avg
+FROM employees curr
+JOIN (
+    SELECT employee_id, salary 
+    FROM employees 
+    WHERE salary_date = (SELECT MAX(salary_date) FROM employees WHERE salary_date < SYSDATE)
+) prev ON curr.employee_id = prev.employee_id
+WHERE curr.salary_date = (SELECT MAX(salary_date) FROM employees)
+ORDER BY percent_increase DESC;
+
+
+-------------------------------------------
+
+SELECT 
+    e1.department_id,
+    d.department_name,
+    COUNT(e1.employee_id) AS headcount,
+    (SELECT COUNT(*) FROM employees) AS total_employees,
+    ROUND(COUNT(e1.employee_id) * 100.0 / (SELECT COUNT(*) FROM employees), 2) AS percentage
+FROM employees e1
+JOIN departments d ON e1.department_id = d.department_id
+GROUP BY e1.department_id, d.department_name
+HAVING COUNT(e1.employee_id) > (
+    SELECT AVG(dept_count) 
+    FROM (
+        SELECT COUNT(employee_id) AS dept_count 
+        FROM employees 
+        GROUP BY department_id
+    ) avg_counts
+)
+ORDER BY headcount DESC;
+
+
+
+
 
 
 
