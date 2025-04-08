@@ -223,6 +223,7 @@ where (is_consective_prev = 1
 
 ------ Which departments have more employees than the average department size, and what percentage of the total workforce do they represent? -----
 
+
 WITH finalDf AS (
 select  
     *
@@ -235,7 +236,16 @@ select
     WHERE 
         empCount > 
     (
-        select avg(emp_count) avgEmpCount from (
+        select avg(emp_count) avgEmpCount 
+        /* Yaxud bu formada manual average taba bileriy
+         select sum(empCount) /12 
+        from (
+            select
+                count(employee_id) empCount, 
+                DEPARTMENT_ID 
+            from hr.employees group by department_id)  */
+        
+        from (
         select count(*) emp_count from hr.employees group by department_id) avg_dep
         ) 
 )
@@ -245,6 +255,8 @@ SELECT
 
     ROUND((empcount / (select count(*) from hr.employees)) * 100,2) emp_prop
 FROM finalDf f ;
+
+
 
 
 
