@@ -202,29 +202,42 @@ WHERE curr.salary_date = (SELECT MAX(salary_date) FROM employees)
 ORDER BY percent_increase DESC;
 
 
--------------------------------------------
+
+
+------Which departments have more employees than the average department size, and what percentage of the total workforce do they represent?-----
+
+
+
+WITH finalDf AS (
+    SELECT  
+        *
+    FROM 
+        (
+        SELECT
+             COUNT(employee_id) empCount, 
+             DEPARTMENT_ID 
+        FROM hr.employees 
+        GROUP BY department_id
+        ) emp_count_tab
+    WHERE 
+        empCount > 
+        (
+            SELECT AVG(emp_count) avgEmpCount 
+            FROM (
+                SELECT COUNT(*) emp_count 
+                FROM hr.employees 
+                GROUP BY department_id
+            ) avg_dep
+        ) 
+)
 
 SELECT 
-    e1.department_id,
-    d.department_name,
-    COUNT(e1.employee_id) AS headcount,
-    (SELECT COUNT(*) FROM employees) AS total_employees,
-    ROUND(COUNT(e1.employee_id) * 100.0 / (SELECT COUNT(*) FROM employees), 2) AS percentage
-FROM employees e1
-JOIN departments d ON e1.department_id = d.department_id
-GROUP BY e1.department_id, d.department_name
-HAVING COUNT(e1.employee_id) > (
-    SELECT AVG(dept_count) 
-    FROM (
-        SELECT COUNT(employee_id) AS dept_count 
-        FROM employees 
-        GROUP BY department_id
-    ) avg_counts
-)
-ORDER BY headcount DESC;
+    f.*,
 
-
-
+    (SELECT COUNT(*) FROM hr.employees) AS total_employee_count,
+     
+    ROUND((empCount /  (SELECT COUNT(*) FROM hr.employees) * 100 ),2) as Proportion
+FROM finalDf f;
 
 
 
