@@ -158,3 +158,99 @@ ORDER BY hire_month_num ASC;
 
 
 
+WITH T AS (
+
+
+SELECT
+   CASE
+       WHEN prevDay IS NOT NULL
+       THEN TRUNC(ORDER_TMS) - TRUNC(prevDay)
+       ELSE NULL
+   END AS days_since_last_purchase, z.*
+FROM (
+   SELECT   
+       LAG(ORDER_TMS) OVER (PARTITION BY customer_id ORDER BY ORDER_TMS) AS prevDay,
+       o.*
+   FROM co.orders o
+) z
+
+
+)
+
+
+SELECT * FROM T WHERE days_since_last_purchase = 1;
+
+
+
+
+-----Consequtive 2 days Orders---------
+
+
+WITH orders_sequence AS (
+select
+   customer_id,
+   ORDER_TMS AS normal_date,
+   LAG(ORDER_TMS) OVER (PARTITION BY customer_id ORDER BY ORDER_TMS) AS prev_date,
+   LEAD(ORDER_TMS) OVER (PARTITION BY customer_id ORDER BY ORDER_TMS) AS next_date
+FROM co.orders )
+   ,
+   consectivie_flags AS (
+       SELECT
+           customer_id,
+           normal_date,
+           prev_date,
+           CASE WHEN  TRUNC(normal_date) - TRUNC(prev_date) = 1 THEN 1 ELSE 0 END as is_consective_prev,
+           CASE WHEN  TRUNC(next_date) - TRUNC(normal_date) = 1 THEN 1 ELSE 0 END AS is_consective_next
+       FROM  orders_sequence
+
+
+   )
+
+
+SELECT
+*
+FROM
+   consectivie_flags
+
+
+where (is_consective_prev = 1
+       -- or is_consective_next = 1
+       );
+
+
+
+
+
+------ Which departments have more employees than the average department size, and what percentage of the total workforce do they represent? -----
+
+WITH finalDf AS (
+select  
+    *
+ from 
+    (
+    select
+         count(employee_id) empCount, DEPARTMENT_ID 
+    from hr.employees group by department_id
+    ) emp_count_tab
+    WHERE 
+        empCount > 
+    (
+        select avg(emp_count) avgEmpCount from (
+        select count(*) emp_count from hr.employees group by department_id) avg_dep
+        ) 
+)
+
+SELECT 
+    f.*,
+
+    ROUND((empcount / (select count(*) from hr.employees)) * 100,2) emp_prop
+FROM finalDf f ;
+
+
+
+
+
+
+
+
+
