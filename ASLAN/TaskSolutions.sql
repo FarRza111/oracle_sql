@@ -102,3 +102,72 @@ select count(*) Tab2_counts, 'T2' from  OurApproach;
 
 
 
+---------------------Retrieving Customers with Consecutive 2-Day Purchases Using Analytic Functions--------
+
+--v1.
+
+WITH T AS (
+
+
+SELECT
+   CASE
+       WHEN prevDay IS NOT NULL
+       THEN TRUNC(ORDER_TMS) - TRUNC(prevDay)
+       ELSE NULL
+   END AS days_since_last_purchase, z.*
+FROM (
+   SELECT
+       LAG(ORDER_TMS) OVER (PARTITION BY customer_id ORDER BY ORDER_TMS) AS prevDay,
+       o.*
+   FROM co.orders o
+) z
+
+
+)
+
+
+SELECT * FROM T WHERE days_since_last_purchase = 1;
+
+
+
+
+--v2--
+WITH orders_sequence AS (
+select
+   customer_id,
+   ORDER_TMS AS normal_date,
+   LAG(ORDER_TMS) OVER (PARTITION BY customer_id ORDER BY ORDER_TMS) AS prev_date,
+   LEAD(ORDER_TMS) OVER (PARTITION BY customer_id ORDER BY ORDER_TMS) AS next_date
+FROM co.orders )
+   ,
+   consectivie_flags AS (
+       SELECT
+           customer_id,
+           normal_date,
+           prev_date,
+           CASE WHEN  TRUNC(normal_date) - TRUNC(prev_date) = 1 THEN 1 ELSE 0 END as is_consective_prev,
+           CASE WHEN  TRUNC(next_date) - TRUNC(normal_date) = 1 THEN 1 ELSE 0 END AS is_consective_next
+       FROM  orders_sequence
+
+
+   )
+
+
+SELECT
+*
+FROM
+   consectivie_flags
+
+
+where (is_consective_prev = 1
+       -- or is_consective_next = 1
+       );
+
+
+
+
+
+
+
+
+
