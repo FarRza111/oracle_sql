@@ -149,16 +149,12 @@ FROM co.orders )
            CASE WHEN  TRUNC(next_date) - TRUNC(normal_date) = 1 THEN 1 ELSE 0 END AS is_consective_next
        FROM  orders_sequence
 
-
    )
-
 
 SELECT
 *
 FROM
    consectivie_flags
-
-
 where (is_consective_prev = 1
        -- or is_consective_next = 1
        );

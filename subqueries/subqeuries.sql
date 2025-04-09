@@ -40,6 +40,24 @@ WHERE salary > e2.avg_sal;
 
 
 
+--v1.2
+
+WITH ct AS (
+SELECT
+    salary,
+    first_name
+    -- ,ROW_NUMBER() OVER (ORDER BY salary) AS row_num
+FROM (
+    SELECT
+        *
+        FROM hr.employees n ORDER BY salary DESC
+
+        ) a
+)
+SELECT * FROM ct WHERE rownum <= 3;
+
+
+
 -- 1. Korrelyasiya olunmuş alt sorğu nümunəsi
 /* Bu sorğu hər bir işçinin maaşını onun şöbəsindəki orta maaşla müqayisə edir.
    Korrelyasiya olunmuş alt sorğu istifadə olunur, çünki hər bir sətir üçün
