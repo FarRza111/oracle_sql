@@ -41,6 +41,17 @@ e.DEPARTMENT_ID = e2.department_id
 WHERE salary > e2.avg_sal;
 
 
+-----
+
+select count(*) from (
+select 
+
+	first_name, salary, (select count(*) from hr.employees) as count_, (select avg(salary) avg_ from hr.employees) as avg_sal
+from hr.employees
+)
+    where salary > avg_sal;
+
+
 
 
 --v1.2
