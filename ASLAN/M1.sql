@@ -268,6 +268,7 @@ from hr.employees e join hr.departments d on e.department_id = d.department_id )
 
 
 
+-- Ele isci cixardin ki en cox isci sayi olan department isleyir ve hemscinin vezife, fullname ve department name olsun (SUBQUERY)
 
 SELECT 
     e.first_name,
@@ -286,7 +287,6 @@ JOIN (
     HAVING COUNT(*) > 1  
 ) dept_counts
 ON e.department_id = dept_counts.department_id;
-
 
 
 
