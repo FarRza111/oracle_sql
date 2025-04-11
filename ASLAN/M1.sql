@@ -257,7 +257,35 @@ SELECT
 FROM finalDf f ;
 
 
+-- Ele isci cixardin ki en cox isci sayi olan department isleyir ve hemscinin vezife, fullname ve department name olsun
 
+
+select * from (
+select 
+    e.first_name, e.last_name, e.employee_id, d.department_name,
+	count(e.employee_id) over (PARTITION BY e.department_id) as say   
+from hr.employees e join hr.departments d on e.department_id = d.department_id ) t where say > 1;
+
+
+
+
+SELECT 
+    e.first_name,
+    e.last_name,
+    e.employee_id,
+    d.department_name,
+    dept_counts.employee_count AS say
+FROM hr.employees e
+JOIN hr.departments d 
+    ON e.department_id = d.department_id
+JOIN (
+    SELECT department_id, 
+           COUNT(*) AS employee_count
+    FROM hr.employees
+    GROUP BY department_id
+    HAVING COUNT(*) > 1  
+) dept_counts
+ON e.department_id = dept_counts.department_id;
 
 
 
