@@ -74,6 +74,78 @@ WHERE e.salary > (
 );
 
 
+
+
+-- derived Table
+
+SELECT *
+FROM (SELECT first_name, salary FROM employees WHERE salary > 5000) AS "high_salaried"
+
+-- Where Clause
+
+SELECT first_name
+FROM employees
+WHERE department_id IN (SELECT department_id FROM departments WHERE location_id>1500);
+
+-- Having Clause
+
+SELECT department_id, AVG(salary)
+FROM employees
+GROUP BY department_id
+HAVING AVG(salary) > (SELECT AVG(salary) FROM employees);
+
+
+-- Scalar SubQuery
+
+SELECT first_name
+FROM employees
+WHERE salary > (SELECT AVG(salary) FROM employees);
+
+
+-- Column Subquery
+
+SELECT first_name
+FROM employees
+WHERE department_id IN (SELECT department_id FROM departments WHERE location_id > 1500);
+
+
+-- Single Row Subquery
+
+SELECT first_name
+FROM employees
+WHERE salary = (SELECT MAX(salary) FROM employees);
+
+
+-- Table Subquery 
+
+SELECT first_name,last_name
+FROM employees
+WHERE department_id IN (SELECT department_id FROM departments);
+
+
+-- Correlates Subquery 
+
+/ * Depends on the outer query and is executed for each row processed by the outer query  */
+SELECT first_name
+FROM employees e1
+WHERE salary > (SELECT AVG(salary) FROM employees e2 WHERE e1.department_id = e2.department_id);
+
+
+
+
+
+-- correlated Subquery
+
+SELECT 
+  lastname,
+  firstname,
+  salary,
+  (SELECT avg(salary)
+    FROM employee e2
+    WHERE e2.dep_id = e1.dep_id) AS avg_dept_salary
+FROM employee e1
+
+
 -- 2. Çoxsəviyyəli alt sorğular
 /* Bu sorğu şirkətin ümumi orta maaşından çox orta maaş verən və
    5-dən çox işçisi olan şöbələri tapır. İç-içə alt sorğular istifadə olunub. */
