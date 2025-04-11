@@ -1,5 +1,8 @@
 /* ikisi eyni neticeni qaytarir amma biri scalar deyerle muqayise edir, correlated deyil */
 
+/* Easy Examples for Aslan */
+
+
 --v0
 SELECT
     count(*)
